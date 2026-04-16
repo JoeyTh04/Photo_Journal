@@ -3,126 +3,132 @@
 <head>
     <title>{{ title }} - Calendar</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f0eb;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border: 1px solid #e8e0d8;
-        }
-        h1 {
-            color: #2c3e2f;
-            text-align: center;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-        .subtitle {
-            text-align: center;
-            color: #a0522d;
-            margin-bottom: 30px;
-            font-size: 16px;
-        }
-        .calendar {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
-            margin-bottom: 30px;
-        }
-        .weekday {
-            text-align: center;
-            font-weight: bold;
-            padding: 12px;
-            background: #e8dcd0;
-            border-radius: 10px;
-            color: #5a3e2b;
-            font-size: 14px;
-        }
-        .day {
-            aspect-ratio: 1;
-            border: 2px solid #e8dcd0;
-            border-radius: 12px;
-            padding: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
-            background: #fefcf9;
-        }
-        .day:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            border-color: #d2691e;
-            background: #fff8f0;
-        }
-        .day-number {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #4a3728;
-        }
-        .has-entry {
-            background: #fff5eb;
-            border-color: #d2691e;
-        }
-        .photo-indicator {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            font-size: 18px;
-        }
-        .empty-day {
-            opacity: 0.4;
-            background: #faf6f2;
-        }
-        .stats {
-            text-align: center;
-            padding: 20px;
-            background: #f5ede5;
-            border-radius: 12px;
-            margin-top: 20px;
-            border: 1px solid #e0d5c8;
-        }
-        .stats span {
-            font-weight: bold;
-            color: #d2691e;
-            font-size: 28px;
-        }
-        @media (max-width: 768px) {
-            .calendar { gap: 5px; }
-            .day { padding: 5px; }
-            .day-number { font-size: 14px; }
-        }
-        
-        /* Dropdown and button styling */
-        select, button {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        select {
-            background: #fefcf9;
-            border: 1px solid #d4c5b5;
-            color: #4a3728;
-            cursor: pointer;
-        }
-        select:hover {
-            border-color: #d2691e;
-            background: #fff8f0;
-        }
-        button {
-            transition: all 0.2s;
-        }
-        button:hover {
-            transform: translateY(-1px);
-            filter: brightness(0.95);
-        }
-    </style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #f5f2e8;
+        min-height: 100vh;
+        padding: 20px;
+    }
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border: 1px solid #d4c9b3;
+    }
+    h1 {
+        color: #2d5a2c;
+        text-align: center;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+    .subtitle {
+        text-align: center;
+        color: #8B7355;
+        margin-bottom: 30px;
+        font-size: 16px;
+    }
+    .calendar {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 10px;
+        margin-bottom: 30px;
+    }
+    .weekday {
+        text-align: center;
+        font-weight: bold;
+        padding: 12px;
+        background: #e8e0d0;
+        border-radius: 10px;
+        color: #4a6741;
+        font-size: 14px;
+    }
+    .day {
+        aspect-ratio: 1;
+        border: 2px solid #d4c9b3;
+        border-radius: 12px;
+        padding: 10px;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+        background: #fefcf7;
+    }
+    .day:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        border-color: #6B8E23;
+        background: #f8f6ee;
+    }
+    .day-number {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #5a4a3a;
+    }
+    .has-entry {
+        background: #eef5e6;
+        border-color: #6B8E23;
+    }
+    .photo-indicator {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        font-size: 18px;
+    }
+    .empty-day {
+        opacity: 0.4;
+        background: #faf8f2;
+    }
+    .stats {
+        text-align: center;
+        padding: 20px;
+        background: #f0ebe0;
+        border-radius: 12px;
+        margin-top: 20px;
+        border: 1px solid #ddd0bc;
+    }
+    .stats span {
+        font-weight: bold;
+        color: #6B8E23;
+        font-size: 28px;
+    }
+    @media (max-width: 768px) {
+        .calendar { gap: 5px; }
+        .day { padding: 5px; }
+        .day-number { font-size: 14px; }
+    }
+    
+    select, button {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    select {
+        background: #fefcf7;
+        border: 1px solid #d4c9b3;
+        color: #5a4a3a;
+        cursor: pointer;
+    }
+    select:hover {
+        border-color: #6B8E23;
+        background: #f8f6ee;
+    }
+    button {
+        transition: all 0.2s;
+        background: #6B8E23;
+    }
+    button:hover {
+        transform: translateY(-1px);
+        background: #5a7a1a;
+    }
+    .back-button {
+        color: #6B8E23;
+    }
+    .back-button:hover {
+        color: #5a7a1a;
+    }
+</style>
 </head>
 <body>
 
