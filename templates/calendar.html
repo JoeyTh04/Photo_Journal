@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }} - Calendar</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f0eb;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid #e8e0d8;
+        }
+        h1 {
+            color: #2c3e2f;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .subtitle {
+            text-align: center;
+            color: #a0522d;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        .weekday {
+            text-align: center;
+            font-weight: bold;
+            padding: 12px;
+            background: #e8dcd0;
+            border-radius: 10px;
+            color: #5a3e2b;
+            font-size: 14px;
+        }
+        .day {
+            aspect-ratio: 1;
+            border: 2px solid #e8dcd0;
+            border-radius: 12px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            background: #fefcf9;
+        }
+        .day:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: #d2691e;
+            background: #fff8f0;
+        }
+        .day-number {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #4a3728;
+        }
+        .has-entry {
+            background: #fff5eb;
+            border-color: #d2691e;
+        }
+        .photo-indicator {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            font-size: 18px;
+        }
+        .empty-day {
+            opacity: 0.4;
+            background: #faf6f2;
+        }
+        .stats {
+            text-align: center;
+            padding: 20px;
+            background: #f5ede5;
+            border-radius: 12px;
+            margin-top: 20px;
+            border: 1px solid #e0d5c8;
+        }
+        .stats span {
+            font-weight: bold;
+            color: #d2691e;
+            font-size: 28px;
+        }
+        @media (max-width: 768px) {
+            .calendar { gap: 5px; }
+            .day { padding: 5px; }
+            .day-number { font-size: 14px; }
+        }
+        
+        /* Dropdown and button styling */
+        select, button {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        select {
+            background: #fefcf9;
+            border: 1px solid #d4c5b5;
+            color: #4a3728;
+            cursor: pointer;
+        }
+        select:hover {
+            border-color: #d2691e;
+            background: #fff8f0;
+        }
+        button {
+            transition: all 0.2s;
+        }
+        button:hover {
+            transform: translateY(-1px);
+            filter: brightness(0.95);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <label for="monthSelect" style="margin-right: 10px; color: #4a3728; font-weight: 500;">Month:</label>
+            <select id="monthSelect" onchange="goToDate()" style="padding: 10px; margin: 0 10px; border-radius: 8px; border: 1px solid #d4c5b5;">
+                <option value="0">January</option>
+                <option value="1">February</option>
+                <option value="2">March</option>
+                <option value="3">April</option>
+                <option value="4">May</option>
+                <option value="5">June</option>
+                <option value="6">July</option>
+                <option value="7">August</option>
+                <option value="8">September</option>
+                <option value="9">October</option>
+                <option value="10">November</option>
+                <option value="11">December</option>
+            </select>
+            
+            <label for="yearSelect" style="margin-left: 20px; margin-right: 10px; color: #4a3728; font-weight: 500;">Year:</label>
+            <select id="yearSelect" onchange="goToDate()" style="padding: 10px; margin: 0 10px; border-radius: 8px; border: 1px solid #d4c5b5;">
+                <!-- Years will be populated by JavaScript -->
+            </select>
+            
+            <button onclick="goToToday()" style="padding: 10px 20px; margin-left: 20px; background: #d2691e; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                📅 Today
+            </button>
+            <div style="margin-top: 15px; font-size: 20px; font-weight: bold; color: #d2691e;" id="monthYear"></div>
+        </div>
+        
+        <h1>{{ title }}</h1>
+        <div class="subtitle">Click any day to add photos and memories</div>
+        
+        <div class="calendar" id="calendar"></div>
+        
+        <div class="stats" id="stats"></div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="/day/{{ now.strftime('%Y-%m-%d') }}" style="display: inline-block; padding: 10px 25px; background: #d2691e; color: white; text-decoration: none; border-radius: 8px; font-weight: 500; transition: all 0.2s;">
+                📝 Journal for Today
+            </a>
+        </div>
+    </div>
+
+    <script>
+    // eslint-disable-next-line
+    const journalData = {{ entries|tojson|safe }};
+    let currentDate = new Date();
+    
+    function populateYearSelect() {
+        const yearSelect = document.getElementById('yearSelect');
+        const currentYear = currentDate.getFullYear();
+        
+        yearSelect.innerHTML = '';
+        
+        for (let year = 2020; year <= 2030; year++) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            if (year === currentYear) {
+                option.selected = true;
+            }
+            yearSelect.appendChild(option);
+        }
+    }
+    
+    function goToDate() {
+        const month = parseInt(document.getElementById('monthSelect').value);
+        const year = parseInt(document.getElementById('yearSelect').value);
+        currentDate = new Date(year, month, 1);
+        renderCalendar();
+        updateSelectors();
+    }
+    
+    function goToToday() {
+        currentDate = new Date();
+        renderCalendar();
+        updateSelectors();
+    }
+    
+    function updateSelectors() {
+        const month = currentDate.getMonth();
+        const year = currentDate.getFullYear();
+        document.getElementById('monthSelect').value = month;
+        document.getElementById('yearSelect').value = year;
+    }
+    
+    function renderCalendar() {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const startingDay = firstDay.getDay();
+        const daysInMonth = lastDay.getDate();
+        
+        const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        
+        let calendarHtml = weekdays.map(day => `<div class="weekday">${day}</div>`).join('');
+        
+        for (let i = 0; i < startingDay; i++) {
+            calendarHtml += `<div class="day empty-day"></div>`;
+        }
+        
+        let monthlyEntries = 0;
+        let monthlyPhotos = 0;
+        
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const hasEntry = journalData[dateStr];
+            const photoCount = hasEntry ? hasEntry.photos.length : 0;
+            
+            if (hasEntry) {
+                monthlyEntries++;
+                monthlyPhotos += photoCount;
+            }
+            
+            calendarHtml += `
+                <div class="day ${hasEntry ? 'has-entry' : ''}" onclick="location.href='/day/${dateStr}'">
+                    <div class="day-number">${day}</div>
+                    ${hasEntry ? `<div class="photo-indicator">📷 ${photoCount}</div>` : ''}
+                    ${hasEntry && hasEntry.notes ? '<div style="font-size: 10px; margin-top: 5px;">✏️</div>' : ''}
+                </div>
+            `;
+        }
+        
+        document.getElementById('calendar').innerHTML = calendarHtml;
+    
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+        const monthName = monthNames[month];
+        
+        document.getElementById('stats').innerHTML = `
+            <div style="margin-bottom: 10px;">
+                📊 ${monthName} ${year}<br>
+                <span>${monthlyEntries}</span> days with memories &nbsp;|&nbsp;
+                <span>${monthlyPhotos}</span> photos
+            </div>
+        `;
+    }
+    
+    populateYearSelect();
+    renderCalendar();
+    updateSelectors();
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+# User data - DON'T upload these!
+journal_entries.json
+static/uploads/*.jpg
+static/uploads/*.png
+static/uploads/*.jpeg
+static/uploads/*.gif
+static/uploads/*.webp
+!static/uploads/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
