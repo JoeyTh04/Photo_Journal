@@ -167,7 +167,7 @@
             {% for photo in entry.photos %}
             <div class="photo-card">
                 <img src="{{ photo.url }}" alt="Photo">
-                <button class="delete-photo" data-index="{{ loop.index0 }}">×</button>
+                <button class="delete-photo" data-id="{{ photo.id }}">×</button>
             </div>
             {% endfor %}
         </div>
@@ -190,19 +190,16 @@
         // Set up delete buttons with event listeners
         document.querySelectorAll('.delete-photo').forEach(button => {
             button.addEventListener('click', function() {
-                const index = this.getAttribute('data-index');
-                deletePhoto(index);
+                const photoId = this.getAttribute('data-id');
+                deletePhoto(photoId);
             });
         });
         
         function showMessage(msg, isError = false) {
             const messageDiv = document.getElementById('message');
             messageDiv.textContent = msg;
-            
-            // Soft orange background, black text
-            messageDiv.style.backgroundColor = '#fff0e0';  // Soft orange
-            messageDiv.style.color = '#000000';           // Black text
-            
+            messageDiv.style.backgroundColor = '#fff0e0';
+            messageDiv.style.color = '#000000';
             messageDiv.style.display = 'block';
             setTimeout(() => {
                 messageDiv.style.display = 'none';
@@ -240,9 +237,9 @@
             }
         }
         
-        async function deletePhoto(index) {
+        async function deletePhoto(photoId) {
             if (confirm('Delete this photo?')) {
-                const response = await fetch(`/delete_photo/{{ date }}/${index}`, {
+                const response = await fetch(`/delete_photo/{{ date }}/${photoId}`, {
                     method: 'DELETE'
                 });
                 const result = await response.json();

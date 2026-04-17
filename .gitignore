@@ -1,5 +1,8 @@
+# Database
+*.db
+*.sqlite
+
 # User data - DON'T upload these!
-journal_entries.json
 static/uploads/*.jpg
 static/uploads/*.png
 static/uploads/*.jpeg
@@ -13,7 +16,11 @@ __pycache__/
 *.pyo
 venv/
 env/
+.env
 
 # IDE
 .vscode/
 .idea/
+
+# Local database credentials
+DATABASE_URL
