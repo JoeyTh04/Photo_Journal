@@ -13,15 +13,17 @@ if not database_url:
     print("ERROR: DATABASE_URL environment variable not set")
     sys.exit(1)
 
-# Fix for Render's postgres:// URL
+# Convert to psycopg3 driver format
 if database_url.startswith('postgres://'):
-    database_url = database_url.replace('postgres://', 'postgresql://', 1)
+    database_url = database_url.replace('postgres://', 'postgresql+psycopg://', 1)
+elif database_url.startswith('postgresql://'):
+    database_url = database_url.replace('postgresql://', 'postgresql+psycopg://', 1)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    'pool_pre_ping': True,  # Check connection before using
-    'pool_recycle': 300,    # Recycle connections every 5 minutes
+    'pool_pre_ping': True,
+    'pool_recycle': 300,
 }
 
 # File upload configuration
