@@ -128,8 +128,27 @@ def view_day(date):
 
 @app.route('/save_entry/<date>', methods=['POST'])
 def save_entry(date):
+    notes = request.form.get('notes', '').strip()
+    
+    # If notes is empty, check if entry exists and has no photos
+    if not notes:
+        entry = JournalEntry.query.filter_by(date=date).first()
+        if entry and not entry.photos:  # No photos and no notes
+            db.session.delete(entry)  # Delete the entire entry
+            db.session.commit()
+            return jsonify({'success': True, 'message': 'Entry deleted (empty)'})
+        elif entry and entry.photos:
+            # Keep entry but clear notes
+            entry.notes = ''
+            entry.updated_at = datetime.utcnow()
+            db.session.commit()
+            return jsonify({'success': True, 'message': 'Notes cleared (photos remain)'})
+        else:
+            return jsonify({'success': True, 'message': 'Nothing to save'})
+    
+    # Normal save flow (notes not empty)
     entry = get_or_create_entry(date)
-    entry.notes = request.form.get('notes', '')
+    entry.notes = notes
     entry.updated_at = datetime.utcnow()
     db.session.commit()
     return jsonify({'success': True, 'message': 'Notes saved!'})
