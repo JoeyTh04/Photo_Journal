@@ -1,9 +1,0 @@
-services:
-  - type: web
-    name: Photo_Journal_webApp
-    runtime: python311
-    buildCommand: pip install -r requirements.txt
-    startCommand: python app.py
-    envVars:
-      - key: DATABASE_URL
-        sync: false
