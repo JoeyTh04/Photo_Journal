@@ -4,6 +4,7 @@ from datetime import datetime
 from flask import Flask, request, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
+from sqlalchemy import text
 
 app = Flask(__name__)
 
@@ -189,7 +190,7 @@ def get_entries():
 @app.route('/health')
 def health():
     try:
-        db.session.execute('SELECT 1')
+        db.session.execute(text('SELECT 1'))
         entry_count = JournalEntry.query.count()
         photo_count = Photo.query.count()
         return jsonify({
@@ -198,7 +199,7 @@ def health():
             'app': 'Photo Journal',
             'entries': entry_count,
             'photos': photo_count,
-            'python_version': sys.version
+            'database_type': 'PostgreSQL'
         })
     except Exception as e:
         return jsonify({
